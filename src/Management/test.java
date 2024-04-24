@@ -8,12 +8,12 @@ package Management;
  *
  * @author Zyron
  */
-public class Rooms extends javax.swing.JPanel {
+public class test extends javax.swing.JPanel {
 
     /**
-     * Creates new form Rooms
+     * Creates new form test
      */
-    public Rooms() {
+    public test() {
         initComponents();
     }
 
@@ -26,17 +26,15 @@ public class Rooms extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setBackground(new java.awt.Color(255, 255, 102));
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 500, Short.MAX_VALUE)
+            .addGap(0, 557, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 420, Short.MAX_VALUE)
+            .addGap(0, 426, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
