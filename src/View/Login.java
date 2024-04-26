@@ -3,7 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package View;
-
+import View.Management;
+import Controller.AdminSignupController;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.logging.Level;
@@ -23,42 +24,8 @@ public class Login extends javax.swing.JFrame {
      * Creates new form Login
      */
     public Login() {
-        try {
             initComponents();
-            Connection();
-        } catch (SQLException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
-//Connection method
-    Connection con;
-    //sql statement
-    Statement st;
-    //Prepared statement
-    PreparedStatement pst;
-    //dbname, driver, url , username, password
-    //type it in order
-    private static final String DbName = "admindb";
-    private static final String DbDriver = "com.mysql.cj.jdbc.Driver";
-    private static final String DbUrl = "jdbc:mysql://localhost:3308/" + DbName;
-    private static final String DbUsername = "root";
-    private static final String DbPassword = "";
-            
-    //connection method
-    public void Connection() throws SQLException{
-        try {
-            Class.forName(DbDriver);
-            //Url, Username, password
-            con = DriverManager.getConnection(DbUrl, DbUsername, DbPassword);
-            st = con.createStatement();
-            if(con != null){
-                System.out.println("Connection Successful");
-            }
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-        }
-}
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -77,7 +44,7 @@ public class Login extends javax.swing.JFrame {
         userPass = new javax.swing.JPasswordField();
         btnLogin = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        showPass = new javax.swing.JCheckBox();
         jPanel5 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         btnSignup = new javax.swing.JButton();
@@ -148,10 +115,10 @@ public class Login extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel2.setText("LOGIN");
 
-        jCheckBox1.setText("show password");
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+        showPass.setText("show password");
+        showPass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox1ActionPerformed(evt);
+                showPassActionPerformed(evt);
             }
         });
 
@@ -170,7 +137,7 @@ public class Login extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
                                 .addGap(122, 122, 122)
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jCheckBox1)
+                                    .addComponent(showPass)
                                     .addGroup(jPanel4Layout.createSequentialGroup()
                                         .addGap(21, 21, 21)
                                         .addComponent(btnLogin)))))
@@ -187,7 +154,7 @@ public class Login extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(userPass, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBox1)
+                .addComponent(showPass)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(12, 12, 12))
@@ -242,7 +209,6 @@ public class Login extends javax.swing.JFrame {
         jPanel6.setPreferredSize(new java.awt.Dimension(300, 516));
         jPanel6.setLayout(new java.awt.BorderLayout());
 
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Login/dayuhanFront (2).jpg"))); // NOI18N
         jLabel5.setText("jLabel5");
         jPanel6.add(jLabel5, java.awt.BorderLayout.CENTER);
 
@@ -258,50 +224,33 @@ public class Login extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_userNameActionPerformed
 
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+    private void showPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPassActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
+                // Toggle password visibility based on checkbox state
+        if (showPass.isSelected()) {
+            userPass.setEchoChar((char) 0); // Show password
+        } else {
+            userPass.setEchoChar('\u2022'); // Hide password
+        }
+    }//GEN-LAST:event_showPassActionPerformed
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         // TODO add your handling code here:
-        String username, password;
-        if("".equals(userName.getText())){
-            JOptionPane.showMessageDialog(new JFrame(), "Required Username");
+        String username = userName.getText();
+        String password = new String(userPass.getPassword());
+
+        // Call the login method in the controller
+        AdminSignupController controller = new AdminSignupController();
+        boolean loggedIn = controller.login(username, password);
+
+        if (loggedIn) {
+             Management management = new Management();
+             management.setVisible(true);
+//             Close the login window
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(new JFrame(), "Invalid username or password");
         }
-        if("".equals(userPass.getText())){
-            JOptionPane.showMessageDialog(new JFrame(), "Required Password");
-        }
-        else{
-            username = userName.getText();
-            password = userPass.getText();
-            
-//tpg helped (check again)
-            String queryLogin = "SELECT * FROM accountinfo WHERE accUsername = ? AND accPassword = ?";
-try {
-    pst = con.prepareStatement(queryLogin);
-    pst.setString(1, username);
-    pst.setString(2, password);
-    ResultSet rs = pst.executeQuery();
-    if (rs.next()) {
-        // Username and password combination exists in the database
-        JOptionPane.showMessageDialog(null, "Account match");
-    } else {
-        // Username and password combination doesn't exist
-        JOptionPane.showMessageDialog(null, "Invalid");
-    }
-} catch (SQLException ex) {
-    Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-}
-            
-            userName.setText("");
-            userPass.setText("");
-        }
-        
-        
-        
-        
-        
-        
         
     }//GEN-LAST:event_btnLoginActionPerformed
 
@@ -359,7 +308,6 @@ try {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLogin;
     private javax.swing.JButton btnSignup;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -370,6 +318,7 @@ try {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JCheckBox showPass;
     private javax.swing.JTextField userName;
     private javax.swing.JPasswordField userPass;
     // End of variables declaration//GEN-END:variables
