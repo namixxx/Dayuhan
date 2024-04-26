@@ -8,6 +8,6 @@ package Model;
  *
  * @author Zyron
  */
-public class Admin {
+public class PaymentModel {
     
 }
