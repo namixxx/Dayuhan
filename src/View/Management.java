@@ -5,7 +5,9 @@
 package View;
 
 import javax.swing.JPanel;
-
+import Model.DashboardModel;
+import java.sql.SQLException;
+import java.util.Map;
 /**
  *
  * @author Zyron
@@ -306,6 +308,54 @@ public class Management extends javax.swing.JFrame {
     private void jPanel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel4MouseClicked
     jPanel11.removeAll();
     Dashboard dashboard = new Dashboard();
+    DashboardModel dashboardModel = new DashboardModel();
+    try {
+        // Fetch total check-ins using DashboardModel instance
+        int totalCheckIns = dashboardModel.getTotalCheckInsToday();
+        dashboard.setTotalCheckIns(totalCheckIns);
+        
+        // Fetch total check-outs using DashboardModel instance
+        int totalCheckOuts = dashboardModel.getTotalCheckOutsToday();
+        dashboard.setTotalCheckOuts(totalCheckOuts);
+        
+        // Fetch total check-outs using DashboardModel instance
+        int totalOccupied = dashboardModel.getTotalOccupiedRooms();
+        dashboard.setTotalOccupied(totalOccupied);
+        
+        // Fetch total check-outs using DashboardModel instance
+        int totalAvailable = dashboardModel.getTotalAvailableRooms();
+        dashboard.setTotalAvailable(totalAvailable);
+        
+        // Fetch week total using DashboardModel instance
+        int weekTotal = dashboardModel.getCheckinTotal();
+        dashboard.setTotalCheckinWeek(weekTotal);
+        
+        // Fetch room status using DashboardModel instance
+        Map<String, Integer> OccupiedStatus = dashboardModel.getOccupiedRoomCounts();
+        dashboard.displayOccupiedRoomStatusCounts(OccupiedStatus);
+        
+        // Fetch room status using DashboardModel instance
+        Map<String, Integer> AvailableStatus = dashboardModel.getAvailableRoomCounts();
+        dashboard.displayAvailableRoomStatusCounts(AvailableStatus);
+        
+        // Fetch week total using DashboardModel instance
+        String DeluxeRooms = dashboardModel.getRoom1Status();
+        dashboard.displayRoom1Status(DeluxeRooms);
+        String PremierRooms = dashboardModel.getRoom2Status();
+        dashboard.displayRoom2Status(PremierRooms);
+        String SuiteRooms = dashboardModel.getRoom3Status();
+        dashboard.displayRoom3Status(SuiteRooms);
+        String PresidentialRooms = dashboardModel.getRoom4Status();
+        dashboard.displayRoom4Status(PresidentialRooms);
+         
+        
+    } catch (SQLException e) {
+        e.printStackTrace();
+        // Handle SQLException
+        dashboard.displayErrorMessage("Error fetching data");
+    }
+  
+        
     jPanel11.add(dashboard);
     jPanel11.revalidate();
     jPanel11.repaint();
